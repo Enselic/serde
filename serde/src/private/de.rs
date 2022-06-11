@@ -42,7 +42,7 @@ where
         forward_to_deserialize! {
             bool u8 u16 u32 u64 i8 i16 i32 i64 f32 f64 char str string unit seq
             seq_fixed_size bytes byte_buf map unit_struct newtype_struct
-            tuple_struct struct identifier tuple enum ignored_any
+            tuple_struct struct identifier tuple ignored_any
         }
     }
 
@@ -1073,7 +1073,7 @@ mod content {
         forward_to_deserialize! {
             bool u8 u16 u32 u64 i8 i16 i32 i64 f32 f64 char str string unit option
             seq seq_fixed_size bytes byte_buf map unit_struct newtype_struct
-            tuple_struct struct identifier tuple enum ignored_any
+            tuple_struct struct identifier tuple ignored_any
         }
     }
 
@@ -1174,7 +1174,7 @@ mod content {
         forward_to_deserialize! {
             bool u8 u16 u32 u64 i8 i16 i32 i64 f32 f64 char str string unit option
             seq seq_fixed_size bytes byte_buf map unit_struct newtype_struct
-            tuple_struct struct identifier tuple enum ignored_any
+            tuple_struct struct identifier tuple ignored_any
         }
     }
 
@@ -1417,7 +1417,7 @@ mod content {
         forward_to_deserialize! {
             bool u8 u16 u32 u64 i8 i16 i32 i64 f32 f64 char str string unit option
             seq seq_fixed_size bytes byte_buf map unit_struct newtype_struct
-            tuple_struct struct identifier tuple enum ignored_any
+            tuple_struct struct identifier tuple ignored_any
         }
     }
 
@@ -1519,7 +1519,7 @@ mod content {
         forward_to_deserialize! {
             bool u8 u16 u32 u64 i8 i16 i32 i64 f32 f64 char str string unit option
             seq seq_fixed_size bytes byte_buf map unit_struct newtype_struct
-            tuple_struct struct identifier tuple enum ignored_any
+            tuple_struct struct identifier tuple ignored_any
         }
     }
 
