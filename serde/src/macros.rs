@@ -227,9 +227,6 @@ macro_rules! forward_to_deserialize_helper {
     (tuple<$l:tt, $v:ident>) => {
         forward_to_deserialize_method!{deserialize_tuple<$l, $v>(len: usize)}
     };
-    (enum<$l:tt, $v:ident>) => {
-        forward_to_deserialize_method!{deserialize_enum<$l, $v>(name: &'static str, variants: &'static [&'static str])}
-    };
     (ignored_any<$l:tt, $v:ident>) => {
         forward_to_deserialize_method!{deserialize_ignored_any<$l, $v>()}
     };

@@ -432,6 +432,12 @@ where
     }
 }
 
+impl<'a> Expected for &'a str {
+    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+        formatter.write_str(self)
+    }
+}
+
 impl<'a> Display for Expected + 'a {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
         Expected::fmt(self, formatter)

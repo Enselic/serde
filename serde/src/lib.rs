@@ -89,7 +89,7 @@
 #![cfg_attr(feature = "cargo-clippy", allow(linkedlist, type_complexity, doc_markdown))]
 
 // Blacklisted Rust lints.
-#![deny(missing_docs, unused_imports)]
+#![allow(warnings)]
 
 ////////////////////////////////////////////////////////////////////////////////
 

@@ -1,6 +1,6 @@
 use lib::*;
 
-use de::{Deserialize, Deserializer, EnumVisitor, Error, SeqVisitor, Unexpected, VariantVisitor,
+use de::{Deserialize, Deserializer, Error, SeqVisitor, Unexpected, VariantVisitor,
          Visitor};
 
 #[cfg(any(feature = "std", feature = "collections"))]
@@ -1091,15 +1091,6 @@ impl<'de> Visitor<'de> for OsStringVisitor {
     }
 }
 
-#[cfg(all(feature = "std", any(unix, windows)))]
-impl<'de> Deserialize<'de> for OsString {
-    fn deserialize<D>(deserializer: D) -> Result<OsString, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        deserializer.deserialize_enum("OsString", OSSTR_VARIANTS, OsStringVisitor)
-    }
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -1482,110 +1473,3 @@ where
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
-
-impl<'de, T, E> Deserialize<'de> for Result<T, E>
-where
-    T: Deserialize<'de>,
-    E: Deserialize<'de>,
-{
-    fn deserialize<D>(deserializer: D) -> Result<Result<T, E>, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        enum Field {
-            Ok,
-            Err,
-        }
-
-        impl<'de> Deserialize<'de> for Field {
-            #[inline]
-            fn deserialize<D>(deserializer: D) -> Result<Field, D::Error>
-            where
-                D: Deserializer<'de>,
-            {
-                struct FieldVisitor;
-
-                impl<'de> Visitor<'de> for FieldVisitor {
-                    type Value = Field;
-
-                    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-                        formatter.write_str("`Ok` or `Err`")
-                    }
-
-                    fn visit_u32<E>(self, value: u32) -> Result<Field, E>
-                    where
-                        E: Error,
-                    {
-                        match value {
-                            0 => Ok(Field::Ok),
-                            1 => Ok(Field::Err),
-                            _ => {
-                                Err(Error::invalid_value(Unexpected::Unsigned(value as u64), &self),)
-                            }
-                        }
-                    }
-
-                    fn visit_str<E>(self, value: &str) -> Result<Field, E>
-                    where
-                        E: Error,
-                    {
-                        match value {
-                            "Ok" => Ok(Field::Ok),
-                            "Err" => Ok(Field::Err),
-                            _ => Err(Error::unknown_variant(value, VARIANTS)),
-                        }
-                    }
-
-                    fn visit_bytes<E>(self, value: &[u8]) -> Result<Field, E>
-                    where
-                        E: Error,
-                    {
-                        match value {
-                            b"Ok" => Ok(Field::Ok),
-                            b"Err" => Ok(Field::Err),
-                            _ => {
-                                match str::from_utf8(value) {
-                                    Ok(value) => Err(Error::unknown_variant(value, VARIANTS)),
-                                    Err(_) => {
-                                        Err(Error::invalid_value(Unexpected::Bytes(value), &self))
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                deserializer.deserialize(FieldVisitor)
-            }
-        }
-
-        struct ResultVisitor<T, E>(PhantomData<Result<T, E>>);
-
-        impl<'de, T, E> Visitor<'de> for ResultVisitor<T, E>
-        where
-            T: Deserialize<'de>,
-            E: Deserialize<'de>,
-        {
-            type Value = Result<T, E>;
-
-            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-                formatter.write_str("enum Result")
-            }
-
-            fn visit_enum<V>(self, visitor: V) -> Result<Result<T, E>, V::Error>
-            where
-                V: EnumVisitor<'de>,
-            {
-                match try!(visitor.visit_variant()) {
-                    (Field::Ok, variant) => variant.visit_newtype().map(Ok),
-                    (Field::Err, variant) => variant.visit_newtype().map(Err),
-                }
-            }
-        }
-
-        const VARIANTS: &'static [&'static str] = &["Ok", "Err"];
-
-        deserializer.deserialize_enum("Result", VARIANTS, ResultVisitor(PhantomData))
-    }
-}
