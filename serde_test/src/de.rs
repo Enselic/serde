@@ -114,10 +114,8 @@ impl<'de, 'a> de::Deserializer<'de> for &'a mut Deserializer<'de> {
             Token::Char(v) => visitor.visit_char(v),
             Token::Str(v) => visitor.visit_str(v),
             Token::BorrowedStr(v) => visitor.visit_borrowed_str(v),
-            Token::String(v) => visitor.visit_string(v.to_owned()),
             Token::Bytes(v) => visitor.visit_bytes(v),
             Token::BorrowedBytes(v) => visitor.visit_borrowed_bytes(v),
-            Token::ByteBuf(v) => visitor.visit_byte_buf(v.to_vec()),
             Token::None => visitor.visit_none(),
             Token::Some => visitor.visit_some(self),
             Token::Unit => visitor.visit_unit(),
@@ -651,6 +649,6 @@ impl<'de> de::Deserializer<'de> for BytesDeserializer {
     forward_to_deserialize! {
         bool u8 u16 u32 u64 i8 i16 i32 i64 f32 f64 char str string unit option
         seq seq_fixed_size bytes map unit_struct newtype_struct tuple_struct
-        struct identifier tuple enum ignored_any byte_buf
+        struct identifier tuple ignored_any byte_buf
     }
 }

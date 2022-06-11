@@ -43,11 +43,3 @@ struct Tuple(u8, u8);
 
 #[derive(Serialize, Deserialize)]
 struct Struct { f: u8 }
-
-#[derive(Serialize, Deserialize)]
-enum Enum {
-    Unit,
-    Newtype(u8),
-    Tuple(u8, u8),
-    Struct { f: u8 },
-}
