@@ -197,33 +197,6 @@ where
     {
         visitor.visit_u32(self.value)
     }
-
-    fn deserialize_enum<V>(
-        self,
-        _name: &str,
-        _variants: &'static [&'static str],
-        visitor: V,
-    ) -> Result<V::Value, Self::Error>
-    where
-        V: de::Visitor<'de>,
-    {
-        visitor.visit_enum(self)
-    }
-}
-
-impl<'de, E> de::EnumVisitor<'de> for U32Deserializer<E>
-where
-    E: de::Error,
-{
-    type Error = E;
-    type Variant = private::UnitOnly<E>;
-
-    fn visit_variant_seed<T>(self, seed: T) -> Result<(T::Value, Self::Variant), Self::Error>
-    where
-        T: de::DeserializeSeed<'de>,
-    {
-        seed.deserialize(self).map(private::unit_only)
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -260,18 +233,6 @@ where
         V: de::Visitor<'de>,
     {
         visitor.visit_str(self.value)
-    }
-
-    fn deserialize_enum<V>(
-        self,
-        _name: &str,
-        _variants: &'static [&'static str],
-        visitor: V,
-    ) -> Result<V::Value, Self::Error>
-    where
-        V: de::Visitor<'de>,
-    {
-        visitor.visit_enum(self)
     }
 
     forward_to_deserialize! {
@@ -333,18 +294,6 @@ where
         V: de::Visitor<'de>,
     {
         visitor.visit_string(self.value)
-    }
-
-    fn deserialize_enum<V>(
-        self,
-        _name: &str,
-        _variants: &'static [&'static str],
-        visitor: V,
-    ) -> Result<V::Value, Self::Error>
-    where
-        V: de::Visitor<'de>,
-    {
-        visitor.visit_enum(self)
     }
 
     forward_to_deserialize! {
@@ -410,18 +359,6 @@ where
             Cow::Borrowed(string) => visitor.visit_str(string),
             Cow::Owned(string) => visitor.visit_string(string),
         }
-    }
-
-    fn deserialize_enum<V>(
-        self,
-        _name: &str,
-        _variants: &'static [&'static str],
-        visitor: V,
-    ) -> Result<V::Value, Self::Error>
-    where
-        V: de::Visitor<'de>,
-    {
-        visitor.visit_enum(self)
     }
 
     forward_to_deserialize! {

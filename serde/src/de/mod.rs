@@ -188,7 +188,8 @@ macro_rules! declare_error_trait {
             /// that is not valid UTF-8, the unexpected value is the bytes and the
             /// expected value is a string.
             fn invalid_value(unexp: Unexpected, exp: &Expected) -> Self {
-                Error::custom(format_args!("invalid value: {}, expected {}", unexp, exp))
+                Error::custom("invalid value: {}, expected {}")
+
             }
 
             /// Raised when deserializing a sequence or map and the input data contains
@@ -201,7 +202,7 @@ macro_rules! declare_error_trait {
             /// expected. For example `exp` might say that a tuple of size 6 was
             /// expected.
             fn invalid_length(len: usize, exp: &Expected) -> Self {
-                Error::custom(format_args!("invalid length {}, expected {}", len, exp))
+                Error::custom("invalid length {}, expected {}")
             }
 
             /// Raised when a `Deserialize` enum type received a variant with an
@@ -431,17 +432,12 @@ where
     }
 }
 
-impl<'a> Expected for &'a str {
-    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        formatter.write_str(self)
-    }
-}
-
 impl<'a> Display for Expected + 'a {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
         Expected::fmt(self, formatter)
     }
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -968,17 +964,6 @@ pub trait Deserializer<'de>: Sized {
     /// Hint that the `Deserialize` type is expecting the name of a struct
     /// field or the discriminant of an enum variant.
     fn deserialize_identifier<V>(self, visitor: V) -> Result<V::Value, Self::Error>
-    where
-        V: Visitor<'de>;
-
-    /// Hint that the `Deserialize` type is expecting an enum value with a
-    /// particular name and possible variants.
-    fn deserialize_enum<V>(
-        self,
-        name: &'static str,
-        variants: &'static [&'static str],
-        visitor: V,
-    ) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>;
 
